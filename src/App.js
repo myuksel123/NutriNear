@@ -11,12 +11,16 @@ import {
   FormGroup,
   Label,
   Input,
-  Navbar,
-  NavbarBrand
 } from "reactstrap";
 
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import * as tt from "@tomtom-international/web-sdk-maps";
+
+import "./styles.css";
+import FuzzySearch from "./components/FuzzySearch";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import CalculateRoute from "./components/CalculateRoute"
+
 
 const MAX_ZOOM = 17;
 
@@ -26,7 +30,6 @@ function App() {
   const [mapLatitude, setMapLatitude] = useState(37.36765);
   const [mapZoom, setMapZoom] = useState(13);
   const [map, setMap] = useState({});
-
   const increaseZoom = () => {
     if (mapZoom < MAX_ZOOM) {
       setMapZoom(mapZoom + 1);
@@ -55,16 +58,15 @@ function App() {
     return () => map.remove();
   }, []);
 
+
+
   return (
     <div className="App">
-      <Navbar dark={true} style={{ backgroundColor: "#4287f5" }}>
-        <NavbarBrand>TomTom Maps + React = 😃</NavbarBrand>
-      </Navbar>
-      <Container className="mapContainer">
+     <Container className="mapContainer">
         <Row>
-          <Col xs="4">
+          <Col xs="3">
             <h4>Map Controls</h4>
-            <FormGroup>
+            <FormGroup class = "mapControls">
               <Label for="longitude">Longitude</Label>
               <Input
                 type="text"
@@ -82,7 +84,7 @@ function App() {
                 onChange={(e) => setMapLatitude(e.target.value)}
               />
             </FormGroup>
-            <Col xs="12">
+            <Col xs="3">
               <Row>Zoom</Row>
               <Row>
                 <Button outline color="primary" onClick={decreaseZoom}>
@@ -94,7 +96,7 @@ function App() {
                 </Button>
               </Row>
             </Col>
-            <Col xs="12">
+            <Col xs="5">
               <Row className="updateButton">
                 <Button color="primary" onClick={updateMap}>
                   Update Map
@@ -107,8 +109,24 @@ function App() {
           </Col>
         </Row>
       </Container>
+
+
+    <Router>
+    <h3><Link to="/FuzzySearch.js">Search Location/Address</Link></h3>
+    <h3><Link to="/calculateRoute.js" >Calculate Route Distance</Link></h3>
+    
+<Routes>
+    <Route path='/FuzzySearch.js' element={<FuzzySearch/>} />
+    <Route path='/calculateRoute.js' element={<CalculateRoute/>} />
+  </Routes>
+
+  </Router>
+
     </div>
   );
+
+  
+
 }
 
 export default App;
