@@ -1,8 +1,12 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "@tomtom-international/web-sdk-maps/dist/maps.css";
+import tt from "@tomtom-international/web-sdk-maps";
+import { services } from '@tomtom-international/web-sdk-services';
+import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
+
 import {
   Container,
   Row,
@@ -13,111 +17,59 @@ import {
   Input,
 } from "reactstrap";
 
-import "@tomtom-international/web-sdk-maps/dist/maps.css";
-import * as tt from "@tomtom-international/web-sdk-maps";
-
 import "./styles.css";
-import FuzzySearch from "./components/FuzzySearch";
+
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import CalculateRoute from "./components/CalculateRoute"
 
-
-const MAX_ZOOM = 17;
 
 function App() {
+  const searchApiKey = 'P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS';
   const mapElement = useRef();
-  const [mapLongitude, setMapLongitude] = useState(-121.91599);
-  const [mapLatitude, setMapLatitude] = useState(37.36765);
-  const [mapZoom, setMapZoom] = useState(13);
+  
   const [map, setMap] = useState({});
-  const increaseZoom = () => {
-    if (mapZoom < MAX_ZOOM) {
-      setMapZoom(mapZoom + 1);
-    }
-  };
+  let searchMarkersManager;
 
-  const decreaseZoom = () => {
-    if (mapZoom > 1) {
-      setMapZoom(mapZoom - 1);
+  const ttSearchBox = new SearchBox(services, {
+    searchOptions: {
+        key: 'P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS',
+        language: 'en-GB'
+    },
+    labels: {
+        placeholder: 'Query e.g. Berlin Airport'
     }
-  };
+  });
 
-  const updateMap = () => {
-    map.setCenter([parseFloat(mapLongitude), parseFloat(mapLatitude)]);
-    map.setZoom(mapZoom);
-  };
+  tt.setProductInfo('<your-product-name>', '<your-product-version>');
+
+
 
   useEffect(() => {
     let map = tt.map({
       key: "P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS",
-      container: mapElement.current,
-      center: [mapLongitude, mapLatitude],
-      zoom: mapZoom
-    });
+      container: mapElement.current
+    }
+    );
+
+
+  map.addControl(new tt.FullscreenControl());
+  map.addControl(new tt.NavigationControl());
+  map.addControl(ttSearchBox, 'top-left');
     setMap(map);
     return () => map.remove();
   }, []);
 
-
-
   return (
     <div className="App">
      <Container className="mapContainer">
-        <Row>
-          <Col xs="3">
-            <h4>Map Controls</h4>
-            <FormGroup class = "mapControls">
-              <Label for="longitude">Longitude</Label>
-              <Input
-                type="text"
-                name="longitude"
-                value={mapLongitude}
-                onChange={(e) => setMapLongitude(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="latitude">Latitude</Label>
-              <Input
-                type="text"
-                name="latitude"
-                value={mapLatitude}
-                onChange={(e) => setMapLatitude(e.target.value)}
-              />
-            </FormGroup>
-            <Col xs="3">
-              <Row>Zoom</Row>
-              <Row>
-                <Button outline color="primary" onClick={decreaseZoom}>
-                  -
-                </Button>
-                <div className="mapZoomDisplay">{mapZoom}</div>
-                <Button outline color="primary" onClick={increaseZoom}>
-                  +
-                </Button>
-              </Row>
-            </Col>
-            <Col xs="5">
-              <Row className="updateButton">
-                <Button color="primary" onClick={updateMap}>
-                  Update Map
-                </Button>
-              </Row>
-            </Col>
-          </Col>
           <Col xs="8">
             <div ref={mapElement} className="mapDiv" />
           </Col>
-        </Row>
       </Container>
-
+    <div id='map' class = 'map'></div>
 
     <Router>
-    <h3><Link to="/FuzzySearch.js">Search Location/Address</Link></h3>
-    <h3><Link to="/calculateRoute.js" >Calculate Route Distance</Link></h3>
     
-<Routes>
-    <Route path='/FuzzySearch.js' element={<FuzzySearch/>} />
-    <Route path='/calculateRoute.js' element={<CalculateRoute/>} />
+<Routes>=
   </Routes>
 
   </Router>

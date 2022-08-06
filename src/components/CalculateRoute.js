@@ -12,7 +12,7 @@ export default function CalculateRoute() {
   const [result, setResult] = useState({});
 
   const calculateRoute = () => {
-    tt.services.calculateRoute({
+    tt.services.CalculateRoute({
         key: "P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS",
         locations: `${startLatitude},${startLongitude}:${destinationLatitude},${destinationLongitude}`
       })
