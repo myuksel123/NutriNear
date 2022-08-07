@@ -21,13 +21,14 @@ import "./styles.css";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-
 function App() {
   const searchApiKey = 'P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS';
   const mapElement = useRef();
   
   const [map, setMap] = useState({});
   let searchMarkersManager;
+
+ 
 
   const ttSearchBox = new SearchBox(services, {
     searchOptions: {
@@ -41,7 +42,7 @@ function App() {
 
   tt.setProductInfo('<your-product-name>', '<your-product-version>');
 
-
+  
 
   useEffect(() => {
     let map = tt.map({
@@ -50,7 +51,9 @@ function App() {
     }
     );
 
-
+    ttSearchBox.on('tomtom.searchbox.resultselected', function(data) {
+      console.log(data);
+  });
   map.addControl(new tt.FullscreenControl());
   map.addControl(new tt.NavigationControl());
   map.addControl(ttSearchBox, 'top-left');
@@ -65,7 +68,7 @@ function App() {
             <div ref={mapElement} className="mapDiv" />
           </Col>
       </Container>
-    <div id='map' class = 'map'></div>
+    <div id='map' className = 'map'></div>
 
     <Router>
     
