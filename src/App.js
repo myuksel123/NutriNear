@@ -1,7 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
-import tt from "@tomtom-international/web-sdk-maps";
+import tt, { LngLat, LngLatBounds } from "@tomtom-international/web-sdk-maps";
 import { services } from '@tomtom-international/web-sdk-services';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 import * as React from "react";
@@ -9,12 +9,7 @@ import { useState, useEffect, useRef } from "react";
 
 import {
   Container,
-  Row,
-  Col,
-  Button,
-  FormGroup,
-  Label,
-  Input,
+  Col
 } from "reactstrap";
 
 import "./styles.css";
@@ -26,10 +21,8 @@ function App() {
   const mapElement = useRef();
   
   const [map, setMap] = useState({});
-  let searchMarkersManager;
 
  
-
   const ttSearchBox = new SearchBox(services, {
     searchOptions: {
         key: 'P7KHFLYhymC5g3qmRU9q9tQ9PHAubmdS',
@@ -51,8 +44,11 @@ function App() {
     }
     );
 
-    ttSearchBox.on('tomtom.searchbox.resultselected', function(data) {
-      console.log(data);
+    ttSearchBox.on('tomtom.searchbox.resultselected', function(response) {
+      let point = response.data.result.position;
+      let long = response.data.result.position?.lng;
+      let lat = response.data.result.position?.lat;
+      map.flyTo({center: point, zoom: 9});
   });
   map.addControl(new tt.FullscreenControl());
   map.addControl(new tt.NavigationControl());
