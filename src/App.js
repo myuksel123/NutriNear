@@ -22,6 +22,13 @@ function App() {
   
   const [map, setMap] = useState({});
 
+  fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key=yYvXsqg0rBw2qm8s90MOKe0ZS8GoVTQubns3lqGA&query=Cheddar%20Cheese')
+  .then(function(response) {
+    console.log(response);
+  })
+  .catch(function(err) {
+    console.log('error');
+  });
  
   const ttSearchBox = new SearchBox(services, {
     searchOptions: {
